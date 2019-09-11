@@ -486,7 +486,7 @@ namespace SOUI
 
             if(!pTarget || !pTarget->IsClass(T::GetClassName()))
             {
-                SLOGFMTW(_T("FindChildByID2 Failed, no window of class [%s] with id of [%d] was found within [%d] levels"),T::GetClassName(),nID,nDeep);
+                SLOGFMTD(_T("FindChildByID2 Failed, no window of class [%s] with id of [%d] was found within [%d] levels"),T::GetClassName(),nID,nDeep);
                 return NULL;
             }
             return (T*)pTarget;
@@ -495,17 +495,17 @@ namespace SOUI
         /**
         * FindChildByName
         * @brief    通过名字查找子窗口
-        * @param    LPCWSTR pszName --  窗口name属性
+        * @param    const SStringW & pszName --  窗口name属性
         * @param    int nDeep --  搜索深度,-1代表无限度
         * @return   SWindow* 
         *
         * Describe  
         */
-        SWindow* FindChildByName(LPCWSTR pszName , int nDeep =-1);
+        SWindow* FindChildByName(LPCWSTR strName , int nDeep =-1);
 
-        SWindow* FindChildByName(LPCSTR pszName , int nDeep =-1)
+        SWindow* FindChildByName(LPCSTR strName , int nDeep =-1)
         {
-            return FindChildByName(S_CA2W(pszName),nDeep);
+            return FindChildByName(S_CA2W(strName),nDeep);
         }
 
         /**
@@ -523,7 +523,7 @@ namespace SOUI
             SWindow *pTarget = FindChildByName(pszName,nDeep);
             if(!pTarget || !pTarget->IsClass(T::GetClassName()))
             {
-                SLOG_WARN("FindChildByName2 Failed, no window of class "<< T::GetClassName()<<" with name of ["<<pszName<<"] was found within ["<<nDeep<<"] levels");
+				SLOGFMTD(_T("FindChildByName2 Failed, no window of class [%s] with name of [%s] was found within [%d] levels"), T::GetClassName(), pszName, nDeep);
                 return NULL;
             }
             return (T*)pTarget;
@@ -814,7 +814,7 @@ namespace SOUI
         * Describe  
         */
 		void RequestRelayout();
-        virtual void RequestRelayout(SWindow *pSource,BOOL bSourceResizable);
+        virtual void RequestRelayout(SWND hSource,BOOL bSourceResizable);
         
         virtual void UpdateLayout();
         
@@ -1123,6 +1123,9 @@ namespace SOUI
 
     protected://helper functions
 
+		SWindow* _FindChildByID(int nID, int nDeep);
+		SWindow* _FindChildByName(const SStringW & strName, int nDeep);
+
         void _Update();
         
     
@@ -1351,6 +1354,7 @@ namespace SOUI
 		SStringW			m_strTrCtx;			/**< translate context. empty than use container's tr ctx*/
         int                 m_nID;              /**< 窗口ID */
         UINT                m_uZorder;          /**< 窗口Zorder */
+		int                 m_nUpdateLockCnt;   /**< 暂时锁定更新Count，锁定后，不向宿主发送Invalidate */
 
         DWORD               m_dwState;          /**< 窗口在渲染过程中的状态 */
         DWORD               m_bVisible:1;       /**< 窗口可见状态 */
@@ -1360,12 +1364,11 @@ namespace SOUI
         DWORD               m_bMsgTransparent:1;/**< 接收消息标志 TRUE-不处理消息 */
         DWORD               m_bFocusable:1;     /**< 窗口可获得焦点标志 */
         DWORD               m_bDrawFocusRect:1; /**< 绘制默认的焦点虚框 */
-        DWORD               m_bUpdateLocked:1;  /**< 暂时锁定更新，锁定后，不向宿主发送Invalidate */
         DWORD               m_bCacheDraw:1;     /**< 支持窗口内容的Cache标志 */
         DWORD               m_bCacheDirty:1;    /**< 缓存窗口脏标志 */
         DWORD               m_bLayeredWindow:1; /**< 指示是否是一个分层窗口 */
-		DWORD               m_layoutDirty:2;    /**< 布局脏标志 参见LayoutDirtyType */
 
+		LayoutDirtyType     m_layoutDirty;      /**< 布局脏标志 参见LayoutDirtyType */
         CAutoRefPtr<IRenderTarget> m_cachedRT;  /**< 缓存窗口绘制的RT */
         CAutoRefPtr<IRenderTarget> m_layeredRT; /**< 分层窗口绘制的RT */
         CAutoRefPtr<IRegion>       m_rgnWnd;    /**< 窗口Region */

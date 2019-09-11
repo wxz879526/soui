@@ -7,6 +7,8 @@
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
 #endif
+
+#define OUTLOG_LEVEL	2	//large than 1 to disable OutputDebugString from soui system log when not use log4z module.
 #include <winsock2.h>
 #include <souistd.h>
 #include <core/SHostDialog.h>
@@ -35,6 +37,7 @@
 #include "../controls.extend/SProgressRing.h"
 #include "../controls.extend/SGroupList.h"
 #include "../controls.extend/SAniWindow.h"
+#include "../controls.extend/propgrid/SPropertyGrid.h"
 
 #include "SInterpolatorView.h"
 #include "SPathView.h"

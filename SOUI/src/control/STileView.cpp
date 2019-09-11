@@ -378,7 +378,7 @@ void STileView::UpdateVisibleItems()
         if(ii.pItem->GetState() & WndState_Check)
         {
             ii.pItem->ModifyItemState(0, WndState_Check);
-            ii.pItem->GetFocusManager()->SetFocusedHwnd(0);
+            ii.pItem->GetFocusManager()->ClearFocus();
         }
         ii.pItem->SetVisible(FALSE);
         ii.pItem->GetEventSet()->setMutedState(false);
@@ -754,6 +754,7 @@ void STileView::SetItemLocator(STileViewItemLocator *pItemLocator)
     if(m_tvItemLocator)
     {
         m_tvItemLocator->SetAdapter(GetAdapter());
+		m_tvItemLocator->SetScale(GetScale());
     }
     onDataSetChanged();
 }
@@ -812,7 +813,7 @@ void STileView::SetSel(int iItem, BOOL bNotify)
     SItemPanel *pItem = GetItemPanel(nOldSel);
     if(pItem)
     {
-        pItem->GetFocusManager()->SetFocusedHwnd((SWND)-1);
+        pItem->GetFocusManager()->ClearFocus();
         pItem->ModifyItemState(0, WndState_Check);
         RedrawItem(pItem);
     }

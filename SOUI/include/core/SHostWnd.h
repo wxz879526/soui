@@ -87,7 +87,6 @@ namespace SOUI
             ATTR_ICON(L"bigIcon",m_hAppIconBig,FALSE)
             ATTR_UINT(L"alpha",m_byAlpha,FALSE)
             ATTR_INT(L"allowSpy",m_bAllowSpy,FALSE)
-            ATTR_INT(L"appMainWnd",m_byWndType,FALSE)
             ATTR_ENUM_BEGIN(L"wndType",DWORD,FALSE)
                 ATTR_ENUM_VALUE(L"undefine",WT_UNDEFINE)
                 ATTR_ENUM_VALUE(L"appMain",WT_APPMAIN)
@@ -331,7 +330,7 @@ protected://Swindow 虚方法
 
 
 public:
-    virtual void RequestRelayout(SWindow *pSource ,BOOL bSourceResizable );
+    virtual void RequestRelayout(SWND hSource ,BOOL bSourceResizable );
 	virtual bool onRootResize(EventArgs *e);
 
 public://事件处理接口

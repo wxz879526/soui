@@ -226,7 +226,7 @@
       </window>
       <button pos="[0,{0,@100,@30" name="btn_lrc">LRC</button>
       <button pos="[10,{0,@100,@30" name="btn_clock">clock</button>
-
+      <roundImg pos="[10,{0,@50,@50" name="img_round" skin="skin_avatar_high"/>
       <button.link pos="[10,{0,@-1,@30" name="btn_tip">提示窗口演示</button.link>
       <hr pos="10,[20,-10,@1" lineStyle="dashdotdot" mode="horizontal" lineColor="#ff0000"/>
       <hr pos="10,{0,-10,-10" lineStyle="dash" mode="tilt" lineColor="#00ff00"/>
@@ -368,8 +368,17 @@
 
 
     </page>
-    <page title="propertygrid">
-      <propgrid pos="10,10,-10,-10" nameWidth="180" orderType="group" switchSkin="skin_propswitch" colorBkgnd="#ffffff" itemHeight="30">
+    <page title="propertygrid" layout="vbox">
+      <window size="-2,-1" layout="hbox">
+        <text text="target:"/>
+        <edit name="prop_target" size="100,30" text="text1.1"/>
+        <text text="property:"/>
+        <edit name="prop_prop" size="100,30" text="value"/>
+        <text text="value:"/>
+        <edit name="prop_value" size="150,30" text="haha"/>
+        <button name="btn_set_prop_value" text="set prop" size="100,30"/>
+      </window>
+      <propgrid name="prop_test" size="-2,0" weight="1" nameWidth="180" orderType="group" switchSkin="skin_propswitch" colorBkgnd="#ffffff" itemHeight="30">
         <cmdbtnstyle skin="_skin.sys.btn.normal">...</cmdbtnstyle>
         <groups>
           <propgroup name="group1" description="desc of group1">

@@ -776,17 +776,6 @@ UINT SRichEdit::OnGetDlgCode()
 	return uRet;
 }
 
-
-CSize SRichEdit::GetDesiredSize( LPCRECT pRcContainer )
-{
-    CSize sz = __super::GetDesiredSize(pRcContainer);
-    sz.cx += m_rcInsetPixel.left + m_rcInsetPixel.right;
-    sz.cy += m_rcInsetPixel.top + m_rcInsetPixel.bottom;
-    sz.cx = sz.cx * GetScale() / 100;
-    sz.cy = sz.cy * GetScale() / 100;
-    return sz;
-}
-
 BOOL SRichEdit::OnScroll( BOOL bVertical,UINT uCode,int nPos )
 {
     if(m_fScrollPending) return FALSE;
@@ -1303,13 +1292,10 @@ LRESULT SRichEdit::OnNcCalcSize( BOOL bCalcValidRects, LPARAM lParam )
 {
     __super::OnNcCalcSize(bCalcValidRects,lParam);
     
-    CRect rcInsetPixel = m_rcInsetPixel;
-    rcInsetPixel.left = rcInsetPixel.left * GetScale() / 100;
-    rcInsetPixel.top = rcInsetPixel.top * GetScale() / 100;
-    rcInsetPixel.right = rcInsetPixel.right * GetScale() / 100;
-    rcInsetPixel.bottom = rcInsetPixel.bottom * GetScale() / 100;
 
-    if(!m_fRich && m_fSingleLineVCenter && !(m_dwStyle&ES_MULTILINE))
+    CRect rcInsetPixel = GetStyle().GetPadding();
+
+	if(!m_fRich && m_fSingleLineVCenter && !(m_dwStyle&ES_MULTILINE))
     {
         rcInsetPixel.top   =
         rcInsetPixel.bottom=(m_rcClient.Height()-m_nFontHeight)/2;
@@ -1371,7 +1357,7 @@ LRESULT SRichEdit::OnSetCharFormat( UINT uMsg, WPARAM wParam, LPARAM lParam )
 {
     if(wParam == SCF_DEFAULT && !FValidCF((CHARFORMAT2W *) lParam))
     {//设置默认字体只支持CHARFORMAT2W
-        SLOGFMTW(_T("set default char format failed! only CHARFORMAT2W can be set for default char format"));
+        SLOGFMTD(_T("set default char format failed! only CHARFORMAT2W can be set for default char format"));
         return 0;
     }
     
@@ -1750,11 +1736,7 @@ void SEdit::OnPaint( IRenderTarget * pRT )
         
         CRect rc;
         GetClientRect(&rc);
-        CRect rcInsetPixel = m_rcInsetPixel;
-        rcInsetPixel.left = rcInsetPixel.left * GetScale() / 100;
-        rcInsetPixel.top = rcInsetPixel.top * GetScale() / 100;
-        rcInsetPixel.right = rcInsetPixel.right * GetScale() / 100;
-        rcInsetPixel.bottom = rcInsetPixel.bottom * GetScale() / 100;
+        CRect rcInsetPixel = GetStyle().GetPadding();
         rc.DeflateRect(rcInsetPixel.left, rcInsetPixel.top, rcInsetPixel.right, rcInsetPixel.bottom);
 		pRT->DrawText(m_strCue.GetText(FALSE),m_strCue.GetText(FALSE).GetLength(),&rc,GetCueTextAlign());
         

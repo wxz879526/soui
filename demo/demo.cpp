@@ -6,7 +6,6 @@
 #include <helper/mybuffer.h>
 #include "httpsvr/HTTPServer.h"
 #include "MemFlash.h"
-#include "../controls.extend/propgrid/SPropertyGrid.h"
 #include "../controls.extend/SFadeFrame.h"
 #include "../controls.extend/sradiobox2.h"
 #include "../controls.extend/SVscrollbar.h"
@@ -25,6 +24,7 @@
 #include "SMatrixWindow.h"
 #include "SmileyCreateHook.h"
 #include "clock/sclock.h"
+#include "SRoundImage.h"
 
 //<--定一个filter="demo"的slog输出
 #undef LOG_FILTER
@@ -33,6 +33,7 @@
 //-->
 
 #include "MainDlg.h"
+
 
 #ifdef _DEBUG
 #define RES_TYPE 0      //从文件中加载资源，加载失败再从PE加载
@@ -170,9 +171,13 @@ int WINAPI _tWinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPTSTR /*
         bLoaded=pComMgr->CreateTranslator((IObjRef**)&trans);
         SASSERT_FMT(bLoaded,_T("load interface [%s] failed!"),_T("translator"));
 
-        if(pComMgr->CreateLog4z((IObjRef**)&pLogMgr))
-        if(pLogMgr){
-            pLogMgr->createLogger("soui");//support output soui trace infomation to log
+        if(pComMgr->CreateLog4z((IObjRef**)&pLogMgr) && pLogMgr)
+        {
+			//uncomment next line to disable log mgr to output debug string.
+			//pLogMgr->setLoggerDisplay(LOG4Z_MAIN_LOGGER_ID,false);	
+			
+			//uncomment next line to record info level log.
+			//pLogMgr->setLoggerLevel(LOG4Z_MAIN_LOGGER_ID,ILog4zManager::LOG_LEVEL_INFO);	
             pLogMgr->start();
         }
         
@@ -196,6 +201,7 @@ int WINAPI _tWinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPTSTR /*
             theApp->RegisterWindowClass<SWkeWebkit>();//注册WKE浏览器
         }
         theApp->RegisterWindowClass<SMatrixWindow>();//
+		theApp->RegisterWindowClass<S3DView>();//
         theApp->RegisterWindowClass<SFreeMoveWindow>();//
         theApp->RegisterWindowClass<SClock>();//
         theApp->RegisterWindowClass<SGifPlayer>();//theApp中增加方法：RegisterWindowClass,替换RegisterWndFactory(TplSWindowFactory<SGifPlayer>())
@@ -224,7 +230,7 @@ int WINAPI _tWinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPTSTR /*
 		theApp->RegisterWindowClass<SCheckBox2>();
 		theApp->RegisterWindowClass<SAniWindow>();
 		theApp->RegisterWindowClass<SGroupList>();
-
+		theApp->RegisterWindowClass<SRoundImage>();
         if(SUCCEEDED(CUiAnimation::Init()))
         {
             theApp->RegisterWindowClass<SUiAnimationWnd>();//注册动画控件

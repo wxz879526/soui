@@ -388,14 +388,6 @@ HRESULT SButton::OnAttrAccel( SStringW strAccel,BOOL bLoading )
     return S_FALSE;
 }
 
-CSize SButton::GetDesiredSize( LPCRECT pRcContainer )
-{
-    SASSERT(m_pBgSkin);
-    CSize szRet=m_pBgSkin->GetSkinSize();
-    if(szRet.cx==0 || szRet.cy==0)
-        szRet=__super::GetDesiredSize(pRcContainer);
-    return szRet;
-}
 
 void SButton::OnStateChanged( DWORD dwOldState,DWORD dwNewState )
 {
@@ -437,6 +429,27 @@ void SButton::OnNextFrame()
 	}
     Invalidate();
 }
+
+
+////////////////////////////////////////////////////////////////////////////
+
+SImageButton::SImageButton()
+{
+	m_bDrawFocusRect=FALSE;
+}
+
+CSize SImageButton::GetDesiredSize(int nParentWid, int nParentHei) 
+{
+	SASSERT(m_pBgSkin);
+	CSize szRet=SButton::GetDesiredSize(nParentWid,nParentHei);
+	CSize szSkin=m_pBgSkin->GetSkinSize();
+	if(GetLayoutParam()->IsWrapContent(Horz))
+		szRet.cx = szSkin.cx;
+	if(GetLayoutParam()->IsWrapContent(Vert))
+		szRet.cy = szSkin.cy;
+	return szRet;
+}
+
 
 //////////////////////////////////////////////////////////////////////////
 // Image Control
@@ -513,6 +526,7 @@ BOOL SImageWnd::SetSkin(ISkinObj *pSkin,int iFrame/*=0*/,BOOL bAutoFree/*=TRUE*/
     if(m_bManaged && m_pSkin)
     {
         m_pSkin->Release();
+		m_pSkin=NULL;
         m_bManaged=FALSE;
     }
     if(!pSkin) return FALSE;
@@ -800,6 +814,13 @@ void SProgress::OnColorize(COLORREF cr)
     __super::OnColorize(cr);
     if(m_pSkinBg) m_pSkinBg->OnColorize(cr);
     if(m_pSkinPos) m_pSkinPos->OnColorize(cr);
+}
+
+void SProgress::OnScaleChanged(int scale)
+{
+	__super::OnScaleChanged(scale);
+	GetScaleSkin(m_pSkinBg,scale);
+	GetScaleSkin(m_pSkinPos,scale);
 }
 
 //////////////////////////////////////////////////////////////////////////
